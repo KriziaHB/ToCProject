@@ -83,7 +83,7 @@ class Converter(object):
             tr = self.originalList[x].split(",")[1] 
             newst = self.originalList[x].split(",")[2] 
             index = SearchAlphabet(alphabet, tr) 
-            print("state: " + st) 
+        #    print("state: " + st) 
             # prevent end of file check 
             if (x < self.fileLen-1): 
                 # check to see if the next line will be for the same state
@@ -93,16 +93,16 @@ class Converter(object):
                     newList.append(newst) 
                     stateMatrix[int(st)][index] = newList
                     newList = []
-                    for x in range(0,len(stateMatrix[int(st)][index])): 
-                        print("transition: " + alphabet[index])
-                        print("new state: " + stateMatrix[int(st)][index][x])
+            #        for x in range(0,len(stateMatrix[int(st)][index])): 
+            #            print("transition: " + alphabet[index])
+            #            print("new state: " + stateMatrix[int(st)][index][x])
             # hit last line of state - transition - new state 
             else: 
                 newList.append(newst) 
                 stateMatrix[int(st)][index] = newList
-                for x in range(0,len(stateMatrix[int(st)][index])): 
-                    print("transition: " + alphabet[index])
-                    print("new state: " + stateMatrix[int(st)][index][x]) 
+            #    for x in range(0,len(stateMatrix[int(st)][index])): 
+            #        print("transition: " + alphabet[index])
+            #        print("new state: " + stateMatrix[int(st)][index][x]) 
                 newList = []
             #print(stateMatrix[int(st)][index]) 
         return stateMatrix 
@@ -119,31 +119,40 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
 
 
 def Step2(SM, A): # NFA to DFA subset reconstruction 
+    oldSM = SM 
+    newSM = SM
     #go through each possibility 
     for st in range(0,len(SM)): 
         # follow all emp to end states 
         newList = [] 
         for trans in range(1,len(A)): #skip empties (check them in follow) 
-            a = Follow(SM,st,trans)
+            a = Follow(oldSM,st,trans)
             newList.append(a) 
             # set to newList then reset newList 
-            SM[st][trans] = newList 
+            newSM[st][trans] = newList 
             newList = [] 
 
  #   for all states 
   #      if (states[i][j].length > 1) 
    #         reorder numerically nested array 
-    return(SM) 
+    return(newSM) 
 # end of Step2  
 
 
 
-def Follow(SM, st, t): 
-    oldSM = SM 
+def Follow(oldSM, st, t): 
     print("st: " + str(st) + " t: " + str(t))
-    a = "test"
-    return (a)
-#    return newState 
+    newState = "test"
+    input = 0 
+    #traverse the oldSM to get all possible paths 
+    print(oldSM[st][t][0])
+
+    # if ends at newState 
+    if (input != "emp"):  
+        return (newState) 
+    # if more to test 
+    else: 
+        return (Follow(oldSM, newState, t)) 
 # end of Follow 
 
 
@@ -159,10 +168,12 @@ def main():
     startState = converter.step1B() 
     alphabet = converter.step1C() 
     stateMatrix = converter.step1D(alphabet)
+    print("Original NFA State Matrix: ") 
     print(stateMatrix) 
 
     # expand matrix for every possibility (SM is new expanded stateMatrix) 
     SM = Step2(stateMatrix, alphabet) 
+    print("Expanded DFA State Matrix: ") 
     print(SM)
 # end of main  
 

@@ -1,3 +1,11 @@
+GIT Commands: 
+git status 
+git add -A 
+git commit -m "" 
+git push -u origin master 
+
+
+
 Step 1: setup 
 	originalList[1] becomes array of finalStates 
 	originalList[2] becomes array of startState
