@@ -120,26 +120,29 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
 
 def Step2(SM, A): # NFA to DFA subset reconstruction 
     #go through each possibility 
-#    for st in range(0,len(SM)) 
+    for st in range(0,len(SM)): 
         # follow all emp to end states 
-#        newList = [] 
-#        for trans in range(0,len(A)): 
-#            a = Follow(SM,st,trans)
-#            newList.append(a) 
-        # set to newList then reset newList 
-#        states[st][trans].append(newList) 
-#        newList = [] 
+        newList = [] 
+        for trans in range(1,len(A)): #skip empties (check them in follow) 
+            a = Follow(SM,st,trans)
+            newList.append(a) 
+            # set to newList then reset newList 
+            SM[st][trans] = newList 
+            newList = [] 
 
  #   for all states 
   #      if (states[i][j].length > 1) 
    #         reorder numerically nested array 
-   pass
+    return(SM) 
 # end of Step2  
 
 
 
 def Follow(SM, st, t): 
-    pass 
+    oldSM = SM 
+    print("st: " + str(st) + " t: " + str(t))
+    a = "test"
+    return (a)
 #    return newState 
 # end of Follow 
 
@@ -159,7 +162,8 @@ def main():
     print(stateMatrix) 
 
     # expand matrix for every possibility (SM is new expanded stateMatrix) 
-#    SM = Step2(stateMatrix, alphabet) 
+    SM = Step2(stateMatrix, alphabet) 
+    print(SM)
 # end of main  
 
 
