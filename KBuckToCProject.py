@@ -16,6 +16,7 @@ class File():
                     # This will split the line based on " //" and only append the first part
                     myList.append(line.split(" //")[0])
         return myList
+# end of class File 
 
 
 
@@ -85,48 +86,27 @@ class Converter(object):
             print("state: " + st) 
             # prevent end of file check 
             if (x < self.fileLen-1): 
-                print("outer if") 
                 # check to see if the next line will be for the same state
                 if (self.originalList[x+1].split(",")[0] == st): 
                     newList.append(newst) 
-                    print("if / if") 
                 else:  
-                    print("if / else") 
-                    # if a single line for this state, then add immediately 
-                    if (len(newList) == 0): 
-                        print("if / else / if") 
-                        stateMatrix[int(st)][index] = newst
-                        print("transition: " + alphabet[index])
-                        print("new state: " + stateMatrix[int(st)][index])
-                    # if a list of newStates for same transition 
-                    else: 
-                        print("if / else / else") 
-                        newList.append(newst) 
-                        stateMatrix[int(st)][index] = newList
-                        newList = []
-                        for x in range(0,len(stateMatrix[int(st)][index])): 
-                            print("transition: " + alphabet[index])
-                            print("new state: " + stateMatrix[int(st)][index][x])
-            # hit last line of state - transition - new state 
-            else:
-                print("outer else")  
-                # if a single line for this state, then add immediately 
-                if (len(newList) < 1): 
-                    print("else / if") 
-                    stateMatrix[int(st)][index] = newst
-                    print("transition: " + alphabet[index])
-                    print("new state: " + stateMatrix[int(st)][index])
-                # if a list of newStates for same transition 
-                else: 
-                    print("else / else") 
                     newList.append(newst) 
                     stateMatrix[int(st)][index] = newList
+                    newList = []
                     for x in range(0,len(stateMatrix[int(st)][index])): 
                         print("transition: " + alphabet[index])
                         print("new state: " + stateMatrix[int(st)][index][x])
-                    newList = []
+            # hit last line of state - transition - new state 
+            else: 
+                newList.append(newst) 
+                stateMatrix[int(st)][index] = newList
+                for x in range(0,len(stateMatrix[int(st)][index])): 
+                    print("transition: " + alphabet[index])
+                    print("new state: " + stateMatrix[int(st)][index][x]) 
+                newList = []
             #print(stateMatrix[int(st)][index]) 
         return stateMatrix 
+# end of class Converter (Step 1) 
 
 
 
@@ -134,22 +114,57 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
     for x in range(0,len(alphabet)): 
         if (alphabet[x] == trans): 
             return x 
+# end of SearchAlphabet 
 
 
-        
+
+def Step2(SM, A): # NFA to DFA subset reconstruction 
+    #go through each possibility 
+#    for st in range(0,len(SM)) 
+        # follow all emp to end states 
+#        newList = [] 
+#        for trans in range(0,len(A)): 
+#            a = Follow(SM,st,trans)
+#            newList.append(a) 
+        # set to newList then reset newList 
+#        states[st][trans].append(newList) 
+#        newList = [] 
+
+ #   for all states 
+  #      if (states[i][j].length > 1) 
+   #         reorder numerically nested array 
+   pass
+# end of Step2  
+
+
+
+def Follow(SM, st, t): 
+    pass 
+#    return newState 
+# end of Follow 
+
+
+
 def main(): 
     # call all functions from main 
     originallist = File.readFile()
     # print(originallist)
+    # converter is step 1 
     converter = Converter(originallist) 
     # pull apart original list into segments 
     finalStates = converter.step1A()
     startState = converter.step1B() 
     alphabet = converter.step1C() 
     stateMatrix = converter.step1D(alphabet)
-    # print(stateMatrix) 
+    print(stateMatrix) 
+
+    # expand matrix for every possibility (SM is new expanded stateMatrix) 
+#    SM = Step2(stateMatrix, alphabet) 
+# end of main  
+
 
 
 # call main then use main to call all functions 
 if __name__ == '__main__':
         main() 
+# end 
