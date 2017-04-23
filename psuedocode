@@ -1,0 +1,82 @@
+Step 1: setup 
+	originalList[1] becomes array of finalStates 
+	originalList[2] becomes array of startState
+	originalList[3] becomes array of alphabet 
+	originalList[0] becomes array of states with each state repeated * alphabet 
+
+	For originalList[5] to end of originalList[]: 
+		states[current state] = transitions[transition, new state] 
+
+
+
+Step 2: expansion 
+	for states[current state]: #vgo through each possibility 
+		# follow all emp to end states (recursive) 
+		states[currentstate][trans].append = follow(states, current state, transition) 
+
+	for all states 
+		if (states[i][j].length > 1) 
+			reorder numerically nested array 
+
+
+
+follow(states, cs, t): #follow down the tree to each possible path from each state 
+	newState = states[cs][t]
+	for (all trans in states[newState])
+		if (trans == emp) #continue branching if an empty transition 
+			return(follow(states, states[newState][trans], t)) 
+		else if (trans == t) #stop if not an empty path 
+			return newState
+
+
+
+Step 3: #for all states not in the original set 
+	for length of states[] 
+		increment transition 
+			if (states[i][j].length > 1) #meaning it has another embedded array 
+				states.append(states[i][j]) # as a new element alphabet number of times 
+				# states's new name is incremented from last state 
+				$$$$ COME BACK 
+				# add any state with the original final state(s) to finalState list 
+				finalStates.append(newState) 
+
+
+Step 4: # start from initial state and construct DFA 
+	DFA[][] 
+	s = startState
+	while s != empty 
+		for each transition 
+			DFA[i][t] = states[s][t]
+			if states[s][t] not in s
+				s.append(states[s][t]) 
+	# reconstructed DFA from initial state 
+
+
+$$COME BACK 
+Step 5: # Minimize DFA with Hopcroft 
+	# initial set up for two sets 
+	for all states in DFA 
+		if DFA state also in finalStates 
+			SetA.append(state) 
+		else 
+			SetB.append(state) 
+	for 
+
+
+
+
+
+Output: 
+	new file called Results.txt: 
+		//Results 
+		states{} 
+		finalStates{} 
+		startState{} 
+		alphabet{}
+		totalTrans= # (alphabet * states) 
+		//Transitions follow 
+		State, transition, newState 
+		for each state & transition 
+			State, transition, newState 
+		... 
+		# //end of file 
