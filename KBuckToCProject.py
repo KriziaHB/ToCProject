@@ -114,69 +114,65 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
 
 
 def Step2(SM, A): # NFA to DFA subset reconstruction
-    newSM = []
-    myList = []
-    transitions = A
-    del transitions[0]
-    print(transitions)
-
-    #go through each possibility 
-    for st in range(0,len(SM)):
-        # initialize new path
-        newSM.append(st)
-        newSM[st] = transitions
-        # follow all emp to end states
-        for trans in range(1,len(A)): #skip empties (check them in follow) 
-            myList = Follow(SM,st,trans,trans,'no')
-            # order numerically and remove duplicates
-            newSM[st][trans-1] = list(set(myList))
-    return(newSM) 
-# end of Step2  
-
-
-#COME BACK 
-def Follow(oldSM, st, t, trans, u): 
-    print("st: " + str(st) + " t: " + str(t) + " trans: " + str(trans) + " u: " + str(u))
-    newState = st # gets passed back to newSM
-    used = u #keeps track if used the current transition 
+    newSM = SM
+    oldList = []
     newList = []
-    secondList = []
-    S = int(st) 
-    T = int(trans) 
-    r = 0
+    done = 0
 
-    # nothing in that set 
-    if (oldSM[S][T] == ''):  
-        T = 0
-    # nothing even with empty transition 
-    if (oldSM[S][T] == ''): 
-        return('') 
+    while done != 1:
+        for st in range(0,len(SM)):
+            oldList = SM[int(st)][0]
+            # check new paths
+            newList = oldList
+            for x in oldList:
+                for z in range(0,len(SM[int(x)][0])):
+                    newList.append(SM[int(x)][0][int(z)])
+            # replace current set with newList and reduce/numerical order
+            newSM[int(st)][0] = list(set(newList))
+        if (newList == oldList):
+            done = 1
+    #end of while
+    print(newSM)
+    for st in range(0,len(SM)):
+        for t in range(1, len(A)):
+            empList = []
+            tList = []
+            newList = []
+            oldList = []
+            #check new paths
+            newList = SM[int(st)][int(t)]
+            # copy down empties
+            for z in newSM[int(st)][0]:
+                empList.append(newSM[int(st)][0][int(z)])
+            # order numerically and remove duplicates
+            empList = list(set(empList))
+            # look for actual transition from empty
+            for x in empList:
+                for z in SM[int(x)][int(t)]:
+                    tList.append(SM[int(x)][int(t)][int(z)])
+            # order numerically and remove duplicates
+            tList = list(set(tList))
+            done = 0
 
-    #traverse the oldSM to get all possible paths  
-    for x in range(0,len(oldSM[S][T])): # current state possibilities
-    #    print("here") 
-    #    print(oldSM[S][T][x]) 
-        if (used == 'yes'): # traverse only empties 
-            r = 1
-        else: 
-            r = len(oldSM[x])
-        print("used " + used) 
-        for y in range(0,r): #all possibilities from new start state 
-            print("in") 
-            for z in range(0,len(oldSM[x][y])): #even empties 
-                newState = oldSM[x][y][z]
-    #            print(newState) 
-                if (newState != ''): # recursion for paths 
-                    print("new " + str(newState)) 
-                    newList.append(int(newState)) 
-                    if (used == 'no' and trans == t): # transition string not used yet 
-                        secondList = Follow(oldSM,newState,t,y,'yes')
-    # capture list from recursion 
-    for x in range(0,len(secondList)): 
-        newList.append(int(secondList[x]))
-    print("end of Follow") 
-    return(newList) 
-# end of Follow 
+            # try to get empties from actual transition
+            oldList = tList
+            newList = []
+            while done != 1:
+                for x in oldList:
+                    for z in range(0,len(SM[int(x)][0])):
+                        newList.append(SM[int(x)][0][int(z)])
+                # replace and reduce/numerical order
+                newList = list(set(newList))
+                if (newList == oldList):
+                    done = 1
+                    newSM[int(st)][int(t)] = newList
+                oldList = newList
+            # end of while
+
+        # order numerically and remove duplicates
+        # list(set(myList))
+    return(newSM) 
+# end of Step2
 
 
 #COME BACK 
@@ -252,9 +248,13 @@ def Step6(DFA, states, sState, fStates, A): # output final DFA
     output.write("\n//Transitions to follow\n") 
 #  ************* COME BACK HERE 
     #state,transition,new state 
-    for s in DFA: 
-        for t in A: 
-            output.write(str(s) + "," + str(t) + "," + str(DFA[s][t]) + "\n")
+#    for s in DFA:
+#        for t in A:
+#            output.write(str(s) + "," + str(t) + ",")
+#            for item in DFA[s][t]:
+#                output.write("%s, " % item)
+           # output.write(DFA[s][t])
+#            output.write("\n")
     # //end of file 
     output.write("\n# //End of File") 
     # close Results file 
@@ -289,11 +289,11 @@ def main():
     print(SM)
     print("-- SPACE for TESTING --") 
     print("should be 10") 
-    print(SM[9][2]) 
+    print(SM[9][1])
     print("should be 1, 2, 3, 4, 6, 7, 8")
-    print(SM[5][1])
+    print(SM[5][0])
     print("should be empty") 
-    print(SM[8][1])
+    print(SM[8][0])
 
     # Add in new States and use Follow again 
     SM = Step3(SM) 
@@ -307,9 +307,9 @@ def main():
     # Output file 
     states = [] #reduced state list 
     sState = 0 #initial state 
-    fStates = [] #all final states 
-    del alphabet[0] #reduce alphabet 
-    Step6(finalDFA, states, sState, fStates, alphabet) 
+    fStates = [] #all final states
+    del alphabet[0] #reduce alphabet
+    Step6(finalDFA, states, sState, fStates, alphabet)
 # end of main  
 
 
