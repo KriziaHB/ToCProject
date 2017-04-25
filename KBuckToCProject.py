@@ -122,17 +122,14 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
 def Step2(SM, A): # NFA to DFA subset reconstruction 
     oldSM = SM 
     newSM = SM
+    myList = []
     #go through each possibility 
     for st in range(0,len(oldSM)): 
         # follow all emp to end states 
         for trans in range(1,len(A)): #skip empties (check them in follow) 
-            newSM[st][trans] = Follow(oldSM,st,trans,trans,'no')
-            print("step2: ") 
-            print(newSM[st][trans]) 
-
- #   for all states 
-  #      if (states[i][j].length > 1) 
-   #         reorder numerically nested array 
+            myList = Follow(oldSM,st,trans,trans,'no')
+            # order numerically and remove duplicates
+            newSM[st][trans] = list(set(myList)) 
     return(newSM) 
 # end of Step2  
 
@@ -145,20 +142,32 @@ def Follow(oldSM, st, t, trans, u):
     newList = []
     S = int(st) 
     T = int(trans) 
+    r = 0
 
-    # case of starting out in a path not in oldSM 
-    if (oldSM[S][T] == '' and oldSM[S][0] != ''): 
-        T = 0 
-        print('is empty') 
-    #traverse the oldSM to get all possible paths         
+    # nothing in that set 
+    if (oldSM[S][T] == ''):  
+        T = 0
+    # nothing even with empty transition 
+    if (oldSM[S][T] == ''): 
+        return('') 
+
+    #traverse the oldSM to get all possible paths  
     for x in range(0,len(oldSM[S][T])): # current state possibilities
-        for y in range(0,len(oldSM[x])): #all possibilities from new start state 
+    #    print("here") 
+    #    print(oldSM[S][T][x]) 
+        if (used == 'yes'): # traverse only empties 
+            r = 1
+        else: 
+            r = len(oldSM[x])
+        print("used " + used) 
+        for y in range(0,r): #all possibilities from new start state 
+            print("in") 
             for z in range(0,len(oldSM[x][y])): #even empties 
                 newState = oldSM[x][y][z]
-                print(newState) 
+    #            print(newState) 
                 if (newState != ''): # recursion for paths 
-                    newList.append(newState) 
-                    print("new " + newState) 
+                    print("new " + str(newState)) 
+                    newList.append(int(newState)) 
                     if (used == 'no' and trans == t): # transition string not used yet 
                         return(Follow(oldSM,newState,t,y,'yes'))
     return(newList) 
@@ -190,8 +199,13 @@ def main():
     SM = Step2(stateMatrix, alphabet) 
     print("Expanded DFA State Matrix: ") 
     print(SM)
-    print("SPACE") 
-    print(SM[5][1]) 
+    print("-- SPACE for TESTING --") 
+    print("should be 10") 
+    print(SM[9][2]) 
+    print("should be 1, 2, 3, 4, 6, 7, 8")
+    print(SM[5][1])
+    print("should be empty") 
+    print(SM[8][1])
 # end of main  
 
 
