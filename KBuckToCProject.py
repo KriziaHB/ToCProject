@@ -71,7 +71,8 @@ class Converter(object):
         for x in c:  
             d = []
             for y in range(0,self.alphLen):  
-                d.append(alphabet[y])
+            #    d.append(alphabet[y]) 
+                d.append('') 
             stateMatrix.append(d)
         # For originalList[6] to end of originalList[] 
         # file length to know when hitting the end 
@@ -126,6 +127,7 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
         # follow all emp to end states 
         for trans in range(1,len(A)): #skip empties (check them in follow) 
             newSM[st][trans] = Follow(oldSM,st,trans,trans,'no')
+            print("step2: ") 
             print(newSM[st][trans]) 
 
  #   for all states 
@@ -137,26 +139,28 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
 
 
 def Follow(oldSM, st, t, trans, u): 
-    print("st: " + str(st) + " t: " + str(t))
+    print("st: " + str(st) + " t: " + str(t) + " trans: " + str(trans) + " u: " + str(u))
     newState = st # gets passed back to newSM
     used = u #keeps track if used the current transition 
     newList = []
     S = int(st) 
     T = int(trans) 
 
-    #traverse the oldSM to get all possible paths 
-    for x in range(0,len(oldSM[S][T])): 
-        #go through each possibility 
-        for st in range(0,len(oldSM)): 
-            # follow all emp to end states 
-            for trans in range(1,len(A)): 
-                
-        newState = oldSM[int(newState)][trans][x]
-        if newState: # recursion for paths 
-            newList.append(newState) 
-            if (used == 'no' and trans == t): # transition string not used yet 
-                return(Follow(oldSM,newState,t,trans,'yes'))
-    
+    # case of starting out in a path not in oldSM 
+    if (oldSM[S][T] == '' and oldSM[S][0] != ''): 
+        T = 0 
+        print('is empty') 
+    #traverse the oldSM to get all possible paths         
+    for x in range(0,len(oldSM[S][T])): # current state possibilities
+        for y in range(0,len(oldSM[x])): #all possibilities from new start state 
+            for z in range(0,len(oldSM[x][y])): #even empties 
+                newState = oldSM[x][y][z]
+                print(newState) 
+                if (newState != ''): # recursion for paths 
+                    newList.append(newState) 
+                    print("new " + newState) 
+                    if (used == 'no' and trans == t): # transition string not used yet 
+                        return(Follow(oldSM,newState,t,y,'yes'))
     return(newList) 
 # end of Follow 
 
@@ -170,8 +174,14 @@ def main():
     converter = Converter(originallist) 
     # pull apart original list into segments 
     finalStates = converter.step1A()
+    print("Final States: ") 
+    print(finalStates)
     startState = converter.step1B() 
+    print("Start State: ") 
+    print(startState) 
     alphabet = converter.step1C() 
+    print("Alphabet: ") 
+    print(alphabet) 
     stateMatrix = converter.step1D(alphabet)
     print("Original NFA State Matrix: ") 
     print(stateMatrix) 
@@ -180,6 +190,8 @@ def main():
     SM = Step2(stateMatrix, alphabet) 
     print("Expanded DFA State Matrix: ") 
     print(SM)
+    print("SPACE") 
+    print(SM[5][1]) 
 # end of main  
 
 
