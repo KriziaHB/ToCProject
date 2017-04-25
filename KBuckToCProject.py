@@ -94,16 +94,10 @@ class Converter(object):
                     newList.append(newst) 
                     stateMatrix[int(st)][index] = newList
                     newList = []
-            #        for x in range(0,len(stateMatrix[int(st)][index])): 
-            #            print("transition: " + alphabet[index])
-            #            print("new state: " + stateMatrix[int(st)][index][x])
             # hit last line of state - transition - new state 
             else: 
                 newList.append(newst) 
                 stateMatrix[int(st)][index] = newList
-            #    for x in range(0,len(stateMatrix[int(st)][index])): 
-            #        print("transition: " + alphabet[index])
-            #        print("new state: " + stateMatrix[int(st)][index][x]) 
                 newList = []
             #print(stateMatrix[int(st)][index]) 
         return stateMatrix 
@@ -119,17 +113,23 @@ def SearchAlphabet(alphabet, trans): # search through the alphabet for correspon
 
 
 
-def Step2(SM, A): # NFA to DFA subset reconstruction 
-    oldSM = SM 
-    newSM = SM
+def Step2(SM, A): # NFA to DFA subset reconstruction
+    newSM = []
     myList = []
+    transitions = A
+    del transitions[0]
+    print(transitions)
+
     #go through each possibility 
-    for st in range(0,len(oldSM)): 
-        # follow all emp to end states 
+    for st in range(0,len(SM)):
+        # initialize new path
+        newSM.append(st)
+        newSM[st] = transitions
+        # follow all emp to end states
         for trans in range(1,len(A)): #skip empties (check them in follow) 
-            myList = Follow(oldSM,st,trans,trans,'no')
+            myList = Follow(SM,st,trans,trans,'no')
             # order numerically and remove duplicates
-            newSM[st][trans] = list(set(myList)) 
+            newSM[st][trans-1] = list(set(myList))
     return(newSM) 
 # end of Step2  
 
