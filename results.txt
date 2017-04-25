@@ -1,0 +1,9 @@
+//Results 
+States: 
+Final States: 
+Start State: 0
+Alphabet: 
+Total Transitions: 0
+//Transitions to follow
+
+# //End of File

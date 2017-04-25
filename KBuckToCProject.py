@@ -222,22 +222,43 @@ def Step5(): # Minimize DFA with Hopcroft
 
 
 # COME BACK 
-def Step6(): # output final DFA 
+def Step6(states, sState, fStates, A): # output final DFA 
 
 #    new file called Results.txt: 
-#        //Results 
-#        states{} 
-#        finalStates{} 
-#        startState{} 
-#        alphabet{}
-#        totalTrans= # (alphabet * states) 
-#        //Transitions follow 
-#        State, transition, newState 
+    output = open("results.txt", "w") 
+    print("Name of the output file: ", output.name) 
+
+    # //Results 
+    output.write("//Results \n") 
+    # states{} 
+    output.write("States: ") 
+    for item in states: 
+        output.write("%s, " % item) 
+    # finalStates{} 
+    output.write("\nFinal States: ")
+    for item in fStates: 
+        output.write("%s, " % item) 
+    # startState{} 
+    output.write("\nStart State: ")
+    output.write(str(sState)) 
+    # alphabet{}
+    output.write("\nAlphabet: ") 
+    for item in A: 
+        output.write("%s, " % item) 
+    # totalTrans= # (alphabet * states) 
+    num = len(A) * len(states) 
+    output.write("\nTotal Transitions: " + str(num)) 
+    # //Transitions follow 
+    output.write("\n//Transitions to follow\n") 
+#  ************* COME BACK HERE 
+#      State, transition, newState 
 #        for each state & transition 
 #            State, transition, newState 
 #        ... 
-        # //end of file 
-    pass 
+    # //end of file 
+    output.write("\n# //End of File") 
+    # close Results file 
+    output.close() 
 # end of Step6
 
 
@@ -284,7 +305,11 @@ def main():
     Step5() 
 
     # Output file 
-    Step6() 
+    states = [] #reduced state list 
+    sState = 0 #initial state 
+    fStates = [] #all final states 
+    A = [] #reduced alphabet 
+    Step6(states, sState, fStates, A) 
 # end of main  
 
 
