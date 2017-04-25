@@ -127,11 +127,12 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             for x in oldList:
                 for z in range(0,len(SM[int(x)][0])):
                     newList.append(SM[int(x)][0][int(z)])
-            # replace current set with newList and reduce/numerical order
+            # replace current set with newList and reduce
             newSM[int(st)][0] = list(set(newList))
         if (newList == oldList):
             done = 1
     #end of while
+    print("newSM")
     print(newSM)
     for st in range(0,len(SM)):
         for t in range(1, len(A)):
@@ -142,14 +143,15 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             #check new paths
             newList = SM[int(st)][int(t)]
             # copy down empties
-            for z in newSM[int(st)][0]:
+            for z in range(0,len(newSM[int(st)][0])):
                 empList.append(newSM[int(st)][0][int(z)])
             # order numerically and remove duplicates
-            empList = list(set(empList))
+            if (len(empList) > 1):
+                empList = list(set(empList))
             # look for actual transition from empty
-            for x in empList:
-                for z in SM[int(x)][int(t)]:
-                    tList.append(SM[int(x)][int(t)][int(z)])
+                for x in range(0,len(empList)):
+                    for z in range(0,len(SM[int(x)][int(t)])):
+                        tList.append(SM[int(x)][int(t)][int(z)])
             # order numerically and remove duplicates
             tList = list(set(tList))
             done = 0
@@ -161,7 +163,7 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
                 for x in oldList:
                     for z in range(0,len(SM[int(x)][0])):
                         newList.append(SM[int(x)][0][int(z)])
-                # replace and reduce/numerical order
+                # replace and reduce
                 newList = list(set(newList))
                 if (newList == oldList):
                     done = 1
