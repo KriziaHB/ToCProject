@@ -2,8 +2,6 @@
 States: 
 Final States: 
 Start State: 0
-Alphabet: 
+Alphabet: a, b, 
 Total Transitions: 0
 //Transitions to follow
-
-# //End of File
