@@ -134,12 +134,13 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
 # end of Step2  
 
 
-
+#COME BACK 
 def Follow(oldSM, st, t, trans, u): 
     print("st: " + str(st) + " t: " + str(t) + " trans: " + str(trans) + " u: " + str(u))
     newState = st # gets passed back to newSM
     used = u #keeps track if used the current transition 
     newList = []
+    secondList = []
     S = int(st) 
     T = int(trans) 
     r = 0
@@ -169,9 +170,75 @@ def Follow(oldSM, st, t, trans, u):
                     print("new " + str(newState)) 
                     newList.append(int(newState)) 
                     if (used == 'no' and trans == t): # transition string not used yet 
-                        return(Follow(oldSM,newState,t,y,'yes'))
+                        secondList = Follow(oldSM,newState,t,y,'yes')
+    # capture list from recursion 
+    for x in range(0,len(secondList)): 
+        newList.append(int(secondList[x]))
+    print("end of Follow") 
     return(newList) 
 # end of Follow 
+
+
+#COME BACK 
+def Step3(SM): #for all states not in the original set 
+    for i in range(0,len(SM)):  
+        for j in range(0,len(SM[i])): 
+            if (len(SM[i][j]) > 1): #meaning it has another embedded array 
+                SM.append(SM[i][j]) # as a new element states's new name is incremented from last state 
+                # add any state with the original final state(s) to finalState list 
+                #finalStates.append(newState) 
+    return(SM)
+# end of Step3  
+
+
+#COME BACK 
+def Step4(S, startState, A): # start from initial state and construct DFA 
+    DFA = [] 
+    i = startState
+    
+#    while i != '': 
+#        DFA[i].append(S[int(i)])
+#        for j in range(1,len(A)): 
+#            DFA[i][j] = S[i][j]
+    #    if S[i][j] not in s
+    #        s.append(states[s][t]) 
+    # reconstructed DFA from initial state 
+    return(S) 
+# end of Step4
+
+
+# COME BACK 
+def Step5(): # Minimize DFA with Hopcroft 
+    # initial set up for two sets 
+#    for all states in DFA 
+#        if DFA state also in finalStates 
+#            SetA.append(state) 
+#        else 
+#            SetB.append(state) 
+#    for 
+
+    pass
+# end of Step5
+
+
+# COME BACK 
+def Step6(): # output final DFA 
+
+#    new file called Results.txt: 
+#        //Results 
+#        states{} 
+#        finalStates{} 
+#        startState{} 
+#        alphabet{}
+#        totalTrans= # (alphabet * states) 
+#        //Transitions follow 
+#        State, transition, newState 
+#        for each state & transition 
+#            State, transition, newState 
+#        ... 
+        # //end of file 
+    pass 
+# end of Step6
 
 
 
@@ -206,6 +273,18 @@ def main():
     print(SM[5][1])
     print("should be empty") 
     print(SM[8][1])
+
+    # Add in new States and use Follow again 
+    SM = Step3(SM) 
+
+    # Minimize starting from initial state 
+    DFA = Step4(SM, startState, alphabet) 
+
+    # Minimize with Hopcroft 
+    Step5() 
+
+    # Output file 
+    Step6() 
 # end of main  
 
 
