@@ -122,15 +122,11 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
     oldSM = SM 
     newSM = SM
     #go through each possibility 
-    for st in range(0,len(SM)): 
+    for st in range(0,len(oldSM)): 
         # follow all emp to end states 
-        newList = [] 
         for trans in range(1,len(A)): #skip empties (check them in follow) 
-            a = Follow(oldSM,st,trans)
-            newList.append(a) 
-            # set to newList then reset newList 
-            newSM[st][trans] = newList 
-            newList = [] 
+            newSM[st][trans] = Follow(oldSM,st,trans,trans,'no')
+            print(newSM[st][trans]) 
 
  #   for all states 
   #      if (states[i][j].length > 1) 
@@ -140,19 +136,28 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
 
 
 
-def Follow(oldSM, st, t): 
+def Follow(oldSM, st, t, trans, u): 
     print("st: " + str(st) + " t: " + str(t))
-    newState = "test"
-    input = 0 
-    #traverse the oldSM to get all possible paths 
-    print(oldSM[st][t][0])
+    newState = st # gets passed back to newSM
+    used = u #keeps track if used the current transition 
+    newList = []
+    S = int(st) 
+    T = int(trans) 
 
-    # if ends at newState 
-    if (input != "emp"):  
-        return (newState) 
-    # if more to test 
-    else: 
-        return (Follow(oldSM, newState, t)) 
+    #traverse the oldSM to get all possible paths 
+    for x in range(0,len(oldSM[S][T])): 
+        #go through each possibility 
+        for st in range(0,len(oldSM)): 
+            # follow all emp to end states 
+            for trans in range(1,len(A)): 
+                
+        newState = oldSM[int(newState)][trans][x]
+        if newState: # recursion for paths 
+            newList.append(newState) 
+            if (used == 'no' and trans == t): # transition string not used yet 
+                return(Follow(oldSM,newState,t,trans,'yes'))
+    
+    return(newList) 
 # end of Follow 
 
 
