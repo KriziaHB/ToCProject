@@ -132,8 +132,7 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
         if (newList == oldList):
             done = 1
     #end of while
-    print("newSM")
-    print(newSM)
+
     for st in range(0,len(SM)):
         for t in range(1, len(A)):
             empList = []
@@ -148,27 +147,38 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             # order numerically and remove duplicates
             if (len(empList) > 1):
                 empList = list(set(empList))
+            print("empty list " )
+            print(empList)
             # look for actual transition from empty
-                for x in range(0,len(empList)):
-                    for z in range(0,len(SM[int(x)][int(t)])):
-                        tList.append(SM[int(x)][int(t)][int(z)])
+            for x in range(0,len(empList)):
+                i = empList[int(x)]
+                for z in range(0,len(SM[int(i)][int(t)])):
+                    tList.append(SM[int(i)][int(t)][int(z)])
+            for z in range(0,len(SM[int(st)][int(t)])):
+                tList.append(SM[int(st)][int(t)][int(z)])
             # order numerically and remove duplicates
-            tList = list(set(tList))
+            oldList = []
+            newList = []
+            if (len(tList) > 0):
+                tList = list(set(tList))
+                oldList = tList
+                print("tList for " + str(st) + " transition " + str(t))
+                print(tList)
             done = 0
 
             # try to get empties from actual transition
-            oldList = tList
-            newList = []
             while done != 1:
-                for x in oldList:
+                for x in range(0,len(oldList)):
+                    newList.append(oldList[int(x)])
                     for z in range(0,len(SM[int(x)][0])):
                         newList.append(SM[int(x)][0][int(z)])
                 # replace and reduce
                 newList = list(set(newList))
-                if (newList == oldList):
+                if (set(newList) == set(oldList)):
                     done = 1
                     newSM[int(st)][int(t)] = newList
                 oldList = newList
+                newList = []
             # end of while
 
         # order numerically and remove duplicates
@@ -178,7 +188,8 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
 
 
 #COME BACK 
-def Step3(SM): #for all states not in the original set 
+def Step3(SM): #for all states not in the original set
+    
     for i in range(0,len(SM)):  
         for j in range(0,len(SM[i])): 
             if (len(SM[i][j]) > 1): #meaning it has another embedded array 
@@ -289,15 +300,9 @@ def main():
     SM = Step2(stateMatrix, alphabet) 
     print("Expanded DFA State Matrix: ") 
     print(SM)
-    print("-- SPACE for TESTING --") 
-    print("should be 10") 
-    print(SM[9][1])
-    print("should be 1, 2, 3, 4, 6, 7, 8")
-    print(SM[5][0])
-    print("should be empty") 
-    print(SM[8][0])
+    print("-- SPACE for TESTING --")
 
-    # Add in new States and use Follow again 
+    # Add in new States
     SM = Step3(SM) 
 
     # Minimize starting from initial state 
