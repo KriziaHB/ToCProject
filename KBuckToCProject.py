@@ -214,16 +214,32 @@ def Step3(SM, A, fStates): #for all states not in the original set
     for x in range(0,len(SM)):
         for y in range(0,len(SM[x])):
             if (len(SM[x][y]) > 1): #meaning it has another embedded array
-                origList = SM[x][y]
-                tracker.append(origList)
-                newSM.append('') # as a new element states's new name is incremented from last state
-                newSM[x].append(A)
-                newSM[x][y].append(origList)
+                origList = list(set(SM[x][y]))
+                #check it isn't already in the tracker
+                add = 1
+                for i in range(0,len(tracker)):
+                    if (origList == tracker[int(i)]):
+                        add = 0
+                if (add == 1):
+                    tracker.append(origList)
+                    newSM.append('') # as a new element states's new name is incremented from last state
+                    newSM[x].append(A)
+                    newSM[x][y].append(origList)
 
-    print("tracker: ")
+    print("Tracker: ")
     print(tracker)
-    # add any state with the original final state(s) to finalState list
-    #finalStates.append(newState)
+
+    # adjust all to capture new naming conventions (single number as opposed to lists)
+    counter = origLen
+    for z in range(0,len(tracker)):
+        for x in range(0,len(newSM)):
+            for y in range(0,len(newSM[x])):
+                myList = newSM[x][y]
+                if (len(myList) > 1):
+                    if (set(tracker[z]) == set(myList)):
+                        newSM[x][y] = counter
+        counter = counter + 1
+
     return(newSM)
 # end of Step3  
 
@@ -232,6 +248,8 @@ def Step3(SM, A, fStates): #for all states not in the original set
 def Step4(S, startState, A): # start from initial state and construct DFA 
     DFA = [] 
     i = startState
+    # add any state with the original final state(s) to finalState list
+    fList = []
     
 #    while i != '': 
 #        DFA[i].append(S[int(i)])
@@ -328,15 +346,16 @@ def main():
     SM = Step2(stateMatrix, alphabet) 
     print("Expanded DFA State Matrix: ") 
     print(SM)
-    print("-- SPACE for TESTING --")
 
     # Add in new States
     origLen = len(SM)
     print("Original length of SM: " + str(origLen))
-    SM = Step3(SM, alphabet, finalStates)
+    simpleSM = Step3(SM, alphabet, finalStates)
+    print("Post Step3 simplification NFA: ")
+    print(simpleSM)
 
     # Minimize starting from initial state 
-    DFA = Step4(SM, startState, alphabet) 
+    DFA = Step4(simpleSM, startState, alphabet)
 
     # Minimize with Hopcroft 
     finalDFA = Step5(DFA) 
