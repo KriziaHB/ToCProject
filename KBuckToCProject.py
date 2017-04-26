@@ -6,9 +6,12 @@ import re
 regex = r"([a-zA-z]*)(//|#)(.*)"
 numbersRegex = r"(\d[0-9]*)"
 
-#globals
+# global variables
 tracker = []
 parallelTracker = []
+states = [] #reduced state list
+sState = 0 #initial state
+fStates = [] #all final states
 
 class File():
     @staticmethod
@@ -208,7 +211,7 @@ def Clean(newSM, A):
 
 
 # PROBABLY NEED TO COME BACK
-def Step3(SM, A, fStates): #for all states not in the original set
+def Step3(SM, A, fsLen): #for all states not in the original set
     origList = []
     global tracker
     global parallelTracker
@@ -231,6 +234,7 @@ def Step3(SM, A, fStates): #for all states not in the original set
                     parallelTracker[len(tracker)-1].append(x)
                     parallelTracker[len(tracker)-1].append(y)
                     newSM.append(A) # as a new element states's new name is incremented from last state
+
     print("newSM in Step3")
     print(newSM)
     print("Tracker: ")
@@ -248,6 +252,18 @@ def Step3(SM, A, fStates): #for all states not in the original set
                     if (set(tracker[z]) == set(myList)):
                         newSM[x][y] = counter
         counter = counter + 1
+
+    # capture final states
+    global fStates
+    counter = origLen
+    for x in range(0,len(tracker)):
+        for y in range(0,len(tracker[int(x)])):
+            for f in range(0,fsLen):
+                if (fStates[int(f)] == tracker[int(x)][int(y)]):
+                    fStates.append(counter)
+        counter = counter + 1
+    print("FINAL STATES")
+    print(fStates)
 
     return(newSM)
 # end of Step3  
@@ -272,7 +288,11 @@ def Step4(S, startState, A): # start from initial state and construct DFA
 
 
 # COME BACK 
-def Step5(DFA): # Minimize DFA with Hopcroft 
+def Step5(DFA): # Minimize DFA with Hopcroft
+    global states #reduced state list
+    global sState #initial state
+    global fStates #all final states
+
     # initial set up for two sets 
 #    for all states in DFA 
 #        if DFA state also in finalStates 
@@ -286,7 +306,7 @@ def Step5(DFA): # Minimize DFA with Hopcroft
 
 
 # COME BACK 
-def Step6(DFA, states, sState, fStates, A): # output final DFA 
+def Step6(DFA, A): # output final DFA
 
 #    new file called Results.txt: 
     output = open("results.txt", "w") 
@@ -304,7 +324,7 @@ def Step6(DFA, states, sState, fStates, A): # output final DFA
         output.write("%s, " % item) 
     # startState{} 
     output.write("\nStart State: ")
-    output.write(str(sState)) 
+    output.write(sState[0])
     # alphabet{}
     output.write("\nAlphabet: ") 
     for item in A: 
@@ -313,8 +333,7 @@ def Step6(DFA, states, sState, fStates, A): # output final DFA
     num = len(A) * len(states) 
     output.write("\nTotal Transitions: " + str(num)) 
     # //Transitions follow 
-    output.write("\n//Transitions to follow\n") 
-#  ************* COME BACK HERE 
+    output.write("\n//Transitions to follow\n")
     #state,transition,new state 
     for s in range(0,len(DFA)):
         for t in range(0,len(A)):
@@ -336,9 +355,15 @@ def main():
     converter = Converter(originallist) 
     # pull apart original list into segments 
     finalStates = converter.step1A()
+    fsLen = len(finalStates)
+    global fStates
+    for x in range(0,len(finalStates)):
+        fStates.append(int(finalStates[int(x)]))
     print("Final States: ") 
     print(finalStates)
-    startState = converter.step1B() 
+    startState = converter.step1B()
+    global sState
+    sState = startState
     print("Start State: ") 
     print(startState) 
     alphabet = converter.step1C() 
@@ -356,7 +381,7 @@ def main():
     # Add in new States
     origLen = len(SM)
     print("Original length of SM: " + str(origLen))
-    simpleSM = Step3(SM, alphabet, finalStates)
+    simpleSM = Step3(SM, alphabet, fsLen)
     print("Post Step3 simplification NFA: ")
     print(simpleSM)
 
@@ -366,12 +391,10 @@ def main():
     # Minimize with Hopcroft 
     finalDFA = Step5(DFA) 
 
-    # Output file 
-    states = [] #reduced state list 
-    sState = 0 #initial state 
-    fStates = [] #all final states
+    # Output file
     del alphabet[0] #reduce alphabet
-    Step6(finalDFA, states, sState, fStates, alphabet)
+    Step6(finalDFA,alphabet)
+    print("COMPLETE")
 # end of main  
 
 
