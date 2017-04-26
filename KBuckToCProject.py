@@ -204,12 +204,14 @@ def Clean(newSM, A):
 # end of Clean
 
 
-
+# PROBABLY NEED TO COME BACK
 def Step3(SM, A, fStates): #for all states not in the original set
     origList = []
     tracker = []
+    parallelTracker = []
     newSM = SM
     origLen = len(SM)
+    counter = origLen
 
     for x in range(0,len(SM)):
         for y in range(0,len(SM[x])):
@@ -222,12 +224,16 @@ def Step3(SM, A, fStates): #for all states not in the original set
                         add = 0
                 if (add == 1):
                     tracker.append(origList)
-                    newSM.append('') # as a new element states's new name is incremented from last state
-                    newSM[x].append(A)
-                    newSM[x][y].append(origList)
-
+                    parallelTracker.append([])
+                    parallelTracker[len(tracker)-1].append(x)
+                    parallelTracker[len(tracker)-1].append(y)
+                    newSM.append(A) # as a new element states's new name is incremented from last state
+    print("newSM in Step3")
+    print(newSM)
     print("Tracker: ")
     print(tracker)
+    print("ParallelTracker: ")
+    print(parallelTracker)
 
     # adjust all to capture new naming conventions (single number as opposed to lists)
     counter = origLen
@@ -235,7 +241,7 @@ def Step3(SM, A, fStates): #for all states not in the original set
         for x in range(0,len(newSM)):
             for y in range(0,len(newSM[x])):
                 myList = newSM[x][y]
-                if (len(myList) > 1):
+                if (isinstance(myList, list)):
                     if (set(tracker[z]) == set(myList)):
                         newSM[x][y] = counter
         counter = counter + 1
@@ -344,7 +350,7 @@ def main():
 
     # expand matrix for every possibility (SM is new expanded stateMatrix) 
     SM = Step2(stateMatrix, alphabet) 
-    print("Expanded DFA State Matrix: ") 
+    print("Expanded NFA State Matrix: ")
     print(SM)
 
     # Add in new States
