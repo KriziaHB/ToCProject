@@ -269,20 +269,35 @@ def Step3(SM, A, fsLen): #for all states not in the original set
 # end of Step3  
 
 
-#COME BACK 
-def Step4(S, startState, A): # start from initial state and construct DFA 
-    DFA = [] 
-    i = startState
-    # add any state with the original final state(s) to finalState list
-    fList = []
+# ALMOST DONE
+def Step4(S, A): # start from initial state and construct DFA
+    DFA = []
+    global sState
+    global fStates
+    s = []
+    s.append(sState)
+    done = 0
+    i = 0
     
-#    while i != '': 
-#        DFA[i].append(S[int(i)])
-#        for j in range(1,len(A)): 
-#            DFA[i][j] = S[i][j]
-    #    if S[i][j] not in s
-    #        s.append(states[s][t]) 
-    # reconstructed DFA from initial state 
+  #  while done != 1: #trace the tree
+    #    for state in range(0,len(s)):
+    #        DFA.append([])
+    #        DFA[i].append(S[int(state)])
+    #        for j in range(0,len(A)):
+    #            DFA[i].append(S[i][int(j)])
+                # add states to trace
+    # currently not working ***************************
+    #            for m in range(0,len(s)):
+    #                if (S[i][j] != s[m]):
+    #                    s.append(S[i][j])
+    #                if (state == len(s)):
+    #                    done = 1
+   #     i = i + 1
+    # end while
+
+    # reconstructed DFA from initial state
+#    print("Reconstructed DFA")
+#    print(DFA)
     return(S) 
 # end of Step4
 
@@ -385,14 +400,14 @@ def main():
     print("Post Step3 simplification NFA: ")
     print(simpleSM)
 
-    # Minimize starting from initial state 
-    DFA = Step4(simpleSM, startState, alphabet)
+    # Minimize starting from initial state
+    del alphabet[0] #reduce alphabet
+    DFA = Step4(simpleSM, alphabet)
 
     # Minimize with Hopcroft 
     finalDFA = Step5(DFA) 
 
     # Output file
-    del alphabet[0] #reduce alphabet
     Step6(finalDFA,alphabet)
     print("COMPLETE")
 # end of main  
