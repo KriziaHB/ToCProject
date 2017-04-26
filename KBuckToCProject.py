@@ -183,20 +183,40 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
 
         # order numerically and remove duplicates
         # list(set(myList))
+
+    #clean up matrix
+    # strip of '\n' and duplicates, get in numerical order and make into ints
+    for st in range(0, len(newSM)):
+        for t in range(0, len(A)):
+            for z in range(0, len(newSM[int(st)][int(t)])):
+                newSM[int(st)][int(t)][int(z)] = newSM[int(st)][int(t)][int(z)].strip()
+                newSM[int(st)][int(t)] = list(set(newSM[int(st)][int(t)]))
+
     return(newSM) 
 # end of Step2
 
 
-#COME BACK 
-def Step3(SM): #for all states not in the original set
-    
-    for i in range(0,len(SM)):  
-        for j in range(0,len(SM[i])): 
-            if (len(SM[i][j]) > 1): #meaning it has another embedded array 
-                SM.append(SM[i][j]) # as a new element states's new name is incremented from last state 
-                # add any state with the original final state(s) to finalState list 
-                #finalStates.append(newState) 
-    return(SM)
+
+def Step3(SM, A, fStates): #for all states not in the original set
+    origList = []
+    tracker = []
+    newSM = SM
+    origLen = len(SM)
+
+    for x in range(0,len(SM)):
+        for y in range(0,len(SM[x])):
+            if (len(SM[x][y]) > 1): #meaning it has another embedded array
+                origList = SM[x][y]
+                tracker.append(origList)
+                newSM.append('') # as a new element states's new name is incremented from last state
+                newSM[x].append(A)
+                newSM[x][y].append(origList)
+
+    print("tracker: ")
+    print(tracker)
+    # add any state with the original final state(s) to finalState list
+    #finalStates.append(newState)
+    return(newSM)
 # end of Step3  
 
 
@@ -303,7 +323,9 @@ def main():
     print("-- SPACE for TESTING --")
 
     # Add in new States
-    SM = Step3(SM) 
+    origLen = len(SM)
+    print("Original length of SM: " + str(origLen))
+    SM = Step3(SM, alphabet, finalStates)
 
     # Minimize starting from initial state 
     DFA = Step4(SM, startState, alphabet) 
