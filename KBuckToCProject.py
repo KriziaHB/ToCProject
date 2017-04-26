@@ -185,6 +185,14 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
         # list(set(myList))
 
     #clean up matrix
+    endSM = Clean(newSM, A)
+
+    return(endSM)
+# end of Step2
+
+
+
+def Clean(newSM, A):
     # strip of '\n' and duplicates, get in numerical order and make into ints
     for st in range(0, len(newSM)):
         for t in range(0, len(A)):
@@ -192,9 +200,8 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             for z in range(0, len(newSM[int(st)][int(t)])):
                 clean.append(int(newSM[int(st)][int(t)][int(z)].strip()))
             newSM[int(st)][int(t)] = list(set(clean))
-
-    return(newSM) 
-# end of Step2
+    return(newSM)
+# end of Clean
 
 
 
