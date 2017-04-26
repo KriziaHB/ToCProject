@@ -1,7 +1,14 @@
+# Krizia Houston Buck
+# Due 4/25/2017 Theory of Computation Project
+
 import re
 
 regex = r"([a-zA-z]*)(//|#)(.*)"
 numbersRegex = r"(\d[0-9]*)"
+
+#globals
+tracker = []
+parallelTracker = []
 
 class File():
     @staticmethod
@@ -147,8 +154,6 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             # order numerically and remove duplicates
             if (len(empList) > 1):
                 empList = list(set(empList))
-            print("empty list " )
-            print(empList)
             # look for actual transition from empty
             for x in range(0,len(empList)):
                 i = empList[int(x)]
@@ -162,8 +167,6 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
             if (len(tList) > 0):
                 tList = list(set(tList))
                 oldList = tList
-                print("tList for " + str(st) + " transition " + str(t))
-                print(tList)
             done = 0
 
             # try to get empties from actual transition
@@ -207,8 +210,8 @@ def Clean(newSM, A):
 # PROBABLY NEED TO COME BACK
 def Step3(SM, A, fStates): #for all states not in the original set
     origList = []
-    tracker = []
-    parallelTracker = []
+    global tracker
+    global parallelTracker
     newSM = SM
     origLen = len(SM)
     counter = origLen
@@ -313,13 +316,10 @@ def Step6(DFA, states, sState, fStates, A): # output final DFA
     output.write("\n//Transitions to follow\n") 
 #  ************* COME BACK HERE 
     #state,transition,new state 
-#    for s in DFA:
-#        for t in A:
-#            output.write(str(s) + "," + str(t) + ",")
-#            for item in DFA[s][t]:
-#                output.write("%s, " % item)
-           # output.write(DFA[s][t])
-#            output.write("\n")
+    for s in range(0,len(DFA)):
+        for t in range(0,len(A)):
+            output.write(str(s) + "," + str(A[t]) + "," + str(DFA[s][t]))
+            output.write("\n")
     # //end of file 
     output.write("\n# //End of File") 
     # close Results file 
