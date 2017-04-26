@@ -188,9 +188,10 @@ def Step2(SM, A): # NFA to DFA subset reconstruction
     # strip of '\n' and duplicates, get in numerical order and make into ints
     for st in range(0, len(newSM)):
         for t in range(0, len(A)):
+            clean = []
             for z in range(0, len(newSM[int(st)][int(t)])):
-                newSM[int(st)][int(t)][int(z)] = newSM[int(st)][int(t)][int(z)].strip()
-                newSM[int(st)][int(t)] = list(set(newSM[int(st)][int(t)]))
+                clean.append(int(newSM[int(st)][int(t)][int(z)].strip()))
+            newSM[int(st)][int(t)] = list(set(clean))
 
     return(newSM) 
 # end of Step2
