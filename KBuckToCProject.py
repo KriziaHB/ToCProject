@@ -293,15 +293,14 @@ def Step4(S, A, startState): # start from initial state and construct DFA
                 # add states to trace
     # currently not working ***************************
                 for m in range(0,len(s)):
+                    val = int(S[i][j])
                     if (len(s) > 1):
                         print(s)
                         s = list(set(s))
-                        if S[i][j] not in set(prevList):
-                            val = int(S[i][j])
+                        if val not in set(prevList):
                             s.append(val)
                             print(val)
-                    elif (S[i][j] != s):
-                        val = int(S[i][j])
+                    elif (val != s):
                         s.append(val)
                         print(val)
         # no change from previous iteration
