@@ -270,34 +270,50 @@ def Step3(SM, A, fsLen): #for all states not in the original set
 
 
 # ALMOST DONE
-def Step4(S, A): # start from initial state and construct DFA
+def Step4(S, A, startState): # start from initial state and construct DFA
+#    DFA = {'state': 0, 'transition': 'a', 'newState': 1}
+#    print(DFA)
     DFA = []
     global sState
     global fStates
     s = []
-    s.append(sState)
+#    s.append(sState)
+    s.append(int(startState[0]))
+    print(s)
     done = 0
     i = 0
+    prevList = s
     
-  #  while done != 1: #trace the tree
-    #    for state in range(0,len(s)):
-    #        DFA.append([])
-    #        DFA[i].append(S[int(state)])
-    #        for j in range(0,len(A)):
-    #            DFA[i].append(S[i][int(j)])
+    while done != 1: #trace the tree
+        for state in range(0,len(prevList)):
+            DFA.append([])
+            DFA[i].append(S[int(state)])
+            for j in range(0,len(A)):
+                DFA[i].append(S[i][int(j)])
                 # add states to trace
     # currently not working ***************************
-    #            for m in range(0,len(s)):
-    #                if (S[i][j] != s[m]):
-    #                    s.append(S[i][j])
-    #                if (state == len(s)):
-    #                    done = 1
-   #     i = i + 1
+                for m in range(0,len(s)):
+                    if (len(s) > 1):
+                        print(s)
+                        s = list(set(s))
+                        if S[i][j] not in set(prevList):
+                            val = int(S[i][j])
+                            s.append(val)
+                            print(val)
+                    elif (S[i][j] != s):
+                        val = int(S[i][j])
+                        s.append(val)
+                        print(val)
+        # no change from previous iteration
+        if (prevList == s):
+            done = 1
+        prevList = list(set(s))
+        i = i + 1
     # end while
 
     # reconstructed DFA from initial state
-#    print("Reconstructed DFA")
-#    print(DFA)
+    print("Reconstructed DFA")
+    print(DFA)
     return(S) 
 # end of Step4
 
@@ -400,9 +416,10 @@ def main():
     print("Post Step3 simplification NFA: ")
     print(simpleSM)
 
+#### NOT WORKING ####
     # Minimize starting from initial state
     del alphabet[0] #reduce alphabet
-    DFA = Step4(simpleSM, alphabet)
+    DFA = Step4(simpleSM, alphabet, startState)
 
     # Minimize with Hopcroft 
     finalDFA = Step5(DFA) 
