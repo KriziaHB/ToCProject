@@ -415,7 +415,9 @@ def main():
     print("Post Step3 simplification NFA: ")
     print(simpleSM)
 
-#### NOT WORKING ####
+    Step6(simpleSM, alphabet)
+
+#### NOT WORKING FULLY ####
     # Minimize starting from initial state
     del alphabet[0] #reduce alphabet
     DFA = Step4(simpleSM, alphabet, startState)
