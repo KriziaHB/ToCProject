@@ -228,7 +228,7 @@ def Step3(SM, A, fsLen): #for all states not in the original set
                 for i in range(0,len(tracker)):
                     if (origList == tracker[int(i)]):
                         add = 0
-                if (add == 1):
+                if (add == 1):  
                     tracker.append(origList)
                     parallelTracker.append([])
                     parallelTracker[len(tracker)-1].append(x)
